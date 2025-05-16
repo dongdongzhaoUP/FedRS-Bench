@@ -1,9 +1,8 @@
-# FedRS-Bench
 
 <div align="center">
   <h2 align="center">FedRS-Bench: Realistic Federated Learning Datasets and Benchmarks in Remote Sensing</h2>
   <a href="https://arxiv.org/abs/2505.08325" style="display: inline-block; text-align: center;">
-      <img alt="arXiv" src="https://img.shields.io/badge/arXiv-2405.08325-b31b1b.svg?style=flat">
+      <img alt="arXiv" src="https://img.shields.io/badge/arXiv-2505.08325-b31b1b.svg?style=flat">
   </a>
 </div>
 
