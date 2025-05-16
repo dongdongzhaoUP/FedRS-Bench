@@ -28,8 +28,6 @@ def init_nets(n_parties, args, device='cpu'):
     nets = {net_i: None for net_i in range(n_parties)}
     if args.dataset == 'RS-5':
         n_classes = 5
-    elif args.dataset == 'RS-10':
-        n_classes = 10
     elif args.dataset == 'RS-15':
         n_classes = 15
     for net_i in range(n_parties):
@@ -54,8 +52,6 @@ def load_parquet_data(datadir, n_parties, dataset, train_distribution, val_distr
 
     if dataset == 'RS-5':
         n_classes = 5
-    elif dataset == 'RS-10':
-        n_classes = 10
     elif dataset == "RS-15":
         n_classes = 15
     all_X_train = []
@@ -164,15 +160,15 @@ def load_DatasetTIF_data(datadir, n_parties, dataset, train_distribution, val_di
     all_traindata_cls_counts = []
     # transform = transforms.Compose([transforms.ToTensor()])
     if train_distribution == 'noniid-1':
-        train_dir = f"{datadir}/train/"
+        train_dir = f"{datadir}/NIID-1/"
     elif train_distribution == 'noniid-2':
-        train_dir = f"{datadir}/train_balanced/"
+        train_dir = f"{datadir}/NIID-2/"
     elif train_distribution == 'centralized':
         train_dir = f"{datadir}/train_merged/"
     # load test set
-    test_dir = f"{datadir}/val/"
+    test_dir = f"{datadir}/val_imbalanced/"
     if val_distribution == 2:
-        test_dir = f"{datadir}/val2/"
+        test_dir = f"{datadir}/val_balanced/"
     xray_test_ds = ImageFolder_SingleDatasetTIF(test_dir, client_idx=None, transform=transform_test)
 
     X_test = np.array([xray_test_ds[i][0].numpy() for i in range(len(xray_test_ds))])
@@ -401,7 +397,12 @@ def get_train_dataloader(args, client_idx, test_bs=32):
                     transform=transform_train
                 )
             else:
-                train_dir = 'train_merged' if args.partition == 'centralized' else f'train'
+                if args.partition == 'centralized':
+                    train_dir = 'train_merged'
+                elif args.partition == 'noniid-1':
+                    train_dir = 'NIID-1'
+                elif args.partition == 'noniid-2':
+                    train_dir = 'NIID-2'
                 train_client_path = os.path.join(datadir, train_dir)
                 train_ds = dl_obj(
                     root=train_client_path,
@@ -430,7 +431,7 @@ def get_test_dataloader(args, test_bs=32):
     if 'RS' in dataset:
         if dataset_form == "imagefolder":
             dl_obj = ImageFolder_SingleDatasetTIF
-            test_dir = 'val2/' if args.val_distribution == 2 else 'val/'
+            test_dir = 'val_balanced/' if args.val_distribution == 2 else 'val_imbalanced/'
             test_client_path = os.path.join(datadir, test_dir)
         elif dataset_form == "parquet":
             dl_obj = ParquetDataset

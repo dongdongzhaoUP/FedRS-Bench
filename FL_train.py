@@ -19,9 +19,9 @@ if __name__ == '__main__':
     args = get_args()
     if args.dataset_form == "imagefolder":
         if args.dataset=='RS-5':
-            args.datadir='../dataset/FedRS/RS5'
+            args.datadir='../dataset/FedRS-5'
         elif args.dataset == 'RS-15':
-            args.datadir = '../dataset/FedRS/RS15'
+            args.datadir = '../dataset/FedRS'
     elif args.dataset_form == "parquet":
             args.datadir = '../dataset/FedRS/'
     if args.alg == 'feddisco':
@@ -102,10 +102,6 @@ if __name__ == '__main__':
     if not os.path.exists(acc_dir):
         os.mkdir(acc_dir)
     acc_path = os.path.join(dataset_logdir, f'acc_list/{args.alg}_{args.dataset}_{args.model}_{args.partition}_val{args.val_distribution}_{now_time}.npy')
-    if '+' in args.alg:
-        args.alg=args.alg.split('+')[0]
-        args.fedcon_plugin=1
-        args.mu=0.75
     if args.server_momentum:
         moment_v = copy.deepcopy(global_model.state_dict())
         for key in moment_v:
@@ -135,9 +131,6 @@ if __name__ == '__main__':
     elif args.alg == 'fedprox':
         print("---FEDPROX---\n")
         record_test_acc_list, best_test_acc = fedprox_alg(args, n_comm_rounds, nets, global_model, party_list_rounds, net_dataidx_map, train_local_dls, test_dl, traindata_cls_counts, moment_v, device, global_dist, logger)
-    elif args.alg == 'fedcon':
-        print("---FEDCON---\n")
-        record_test_acc_list, best_test_acc = fedcon_alg(args, n_comm_rounds, nets, global_model, party_list_rounds, net_dataidx_map, train_local_dls, test_dl, traindata_cls_counts, moment_v,device, global_dist, logger)
     elif args.alg == 'feddisco':
         print("---FEDDISCO---\n")
         args.disco = 1
