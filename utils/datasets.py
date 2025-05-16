@@ -158,7 +158,7 @@ class ImageFolder_SingleDatasetTIF(DatasetFolder):
         # Use the custom find_classes method
         classes, class_to_idx = self.find_classes(client_root)
 
-        imagefolder_obj = ImageFolder(client_root, transform=self.transform, target_transform=self.target_transform)
+        imagefolder_obj = ImageFolder(client_root, transform=self.transform, target_transform=self.target_transform,allow_empty=True)
 
         # Update class mapping
         imagefolder_obj.class_to_idx = class_to_idx
